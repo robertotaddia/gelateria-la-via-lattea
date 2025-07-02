@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gelateria La Via Lattea</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Quicksand', sans-serif;
+      background: #fff8f3;
+      color: #4b4b4b;
+    }
+
+    header {
+      background-color: #fde2e4;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: #d16ba5;
+    }
+
+    .lang-switch {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #fff;
+      border: 1px solid #d1cfcf;
+      border-radius: 20px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+
+    .container {
+      padding: 1rem;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .flavor {
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
+    }
+
+    .flavor:hover {
+      transform: scale(1.01);
+    }
+
+    .flavor-title {
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #ff91a4;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .flavor-details {
+      display: none;
+      margin-top: 0.5rem;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .ingredients {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    @media (max-width: 600px) {
+      .flavor-title {
+        font-size: 1rem;
+      }
+    }
+
+    .icon {
+      height: 30px;
+      vertical-align: middle;
+    }
+
+    .filter-bar {
+      text-align: center;
+      margin: 1rem auto;
+      font-size: 1rem;
+    }
+
+    .filter-bar select {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    .disabled {
+      color: #999;
+      cursor: default;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="immagini/logo.png" alt="Logo Gelateria La Via Lattea" style="height: 80px; margin-bottom: 0.5rem;" />
+    <h1>Gelateria La Via Lattea</h1>
+    <div class="lang-switch" onclick="switchLang()">IT | EN</div>
+    <div class="filter-bar">
+      <label for="filter" id="filter-label" data-i18n="filterLabel">Filtra:</label>
+      <select id="filter">
+        <option value="tutti" data-i18n="filterAll">Tutti</option>
+        <option value="vegani" data-i18n="filterVegan">Vegani</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container" id="flavor-list">
+    <!-- Gusti vengono inseriti via JS -->
+  </div>
+
+  <div class="footer">© 2025 Gelateria La Via Lattea</div>
+
+  <script>
+    const translations = {
+      it: {
+        filterLabel: "Filtra:",
+        filterAll: "Tutti",
+        filterVegan: "Vegani"
+      },
+      en: {
+        filterLabel: "Filter:",
+        filterAll: "All",
+        filterVegan: "Vegan"
+      }
+    };
+
+    const flavors = [
+      { name: { it: "Amarena", en: "Sour Cherry" }, vegano: false, description: { it: "Fiordilatte con amarene", en: "Milk cream with sour cherries" } },
+      { name: { it: "Bacio", en: "Bacio" }, vegano: false, description: { it: "", en: "" } },
+      { name: { it: "Cioccolato", en: "Chocolate" }, vegano: false, description: { it: "", en: "" } },
+      { name: { it: "Cioccolato fondente Santo Domingo 70%", en: "Dark Chocolate Santo Domingo 70%" }, vegano: true, description: { it: "", en: "" } },
+      { name: { it: "Cookies Caramel", en: "Cookies Caramel" }, vegano: false, description: { it: "", en: "" } },
+      { name: { it: "Crema", en: "Cream" }, vegano: false, description: { it: "", en: "" } },
+      { name: { it: "Cremino Croccante", en: "Crunchy Cream" }, vegano: false, description: { it: "Nocciola, nutella e cereali ricoperti di cioccolato", en: "Hazelnut, Nutella, and chocolate-covered cereals" } },
+      { name: { it: "Crunchy Lemon", en: "Crunchy Lemon" }, vegano: false, description: { it: "Crema al limone e crumble al limone", en: "Lemon cream with lemon crumble" } },
+      { name: { it: "Fiordilatte", en: "Milk Cream" }, vegano: false, description: { it: "", en: "" } },
+      { name: { it: "Fragola", en: "Strawberry" }, vegano: true, description: { it: "", en: "" } },
+      { name: { it: "Frutti Rossi", en: "Red Fruits" }, vegano: true, description: { it: "Lampone, fragola, ciliegia e melagrana", en: "Raspberry, strawberry, cherry, and pomegranate" } },
+      { name: { it: "Limone", en: "Lemon" }, vegano: true, description: { it: "", en: "" } },
+      { name: { it: "Mango", en: "Mango" }, vegano: true, description: { it: "", en: "" } },
+      { name: { it: "Mascarpone al Caramello Salato", en: "Salted Caramel Mascarpone" }, vegano: false, description: { it: "Con crumble al caramello", en: "With caramel crumble" } },
+      { name: { it: "Mousse allo Zabaione", en: "Zabaione Mousse" }, vegano: false, description: { it: "", en: "" } },
+      { name: { it: "Nocciola", en: "Hazelnut" }, vegano: false, description: { it: "", en: "" } },
+      { name: { it: "Nocciola Olvi", en: "Hazelnut Olvi" }, vegano: true, description: { it: "", en: "" } },
+      { name: { it: "Nutella", en: "Nutella" }, vegano: false, description: { it: "", en: "" } },
+      { name: { it: "Panna Cotta", en: "Panna Cotta" }, vegano: false, description: { it: "Panna con caramello", en: "Cream with caramel" } },
+      { name: { it: "Pistacchio", en: "Pistachio" }, vegano: false, description: { it: "", en: "" } },
+      { name: { it: "Sognando la Sardegna", en: "Dreaming of Sardinia" }, vegano: false, description: { it: "Ricotta, miele e crumble al mirto", en: "Ricotta, honey, and myrtle crumble" } },
+      { name: { it: "Stracciatella", en: "Stracciatella" }, vegano: false, description: { it: "Fiordilatte con gocce di cioccolato", en: "Milk cream with chocolate chips" } },
+      { name: { it: "Stracciatella Olvi", en: "Stracciatella Olvi" }, vegano: true, description: { it: "", en: "" } },
+      { name: { it: "Vaniglia Olvi con mela e cannella", en: "Vanilla Olvi with apple and cinnamon" }, vegano: true, description: { it: "", en: "" } },
+      { name: { it: "Viaggio in Toscana", en: "Trip to Tuscany" }, vegano: false, description: { it: "Crema all'amaretto, vino dolce, crumble alla mandorla e anice stellato", en: "Amaretto cream, sweet wine, almond crumble, and star anise" } },
+      { name: { it: "Yogurt", en: "Yogurt" }, vegano: false, description: { it: "", en: "" } },
+      { name: { it: "Zuppa Inglese", en: "English Trifle" }, vegano: false, description: { it: "Crema, pan di Spagna e alchermes", en: "Cream, sponge cake, and Alchermes liqueur" } },
+    ].sort((a, b) => a.name.it.localeCompare(b.name.it));
+
+    let currentLang = 'it';
+
+    function switchLang() {
+      currentLang = currentLang === 'it' ? 'en' : 'it';
+      updateFilterLabels();
+      renderFlavors();
+    }
+
+    function updateFilterLabels() {
+      const elements = document.querySelectorAll('[data-i18n]');
+      elements.forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[currentLang][key]) {
+          el.textContent = translations[currentLang][key];
+        }
+      });
+    }
+
+    function toggleDetails(index) {
+      const details = document.getElementById(`details-${index}`);
+      details.style.display = details.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function renderFlavors() {
+      const list = document.getElementById("flavor-list");
+      const selectedFilter = document.getElementById("filter")?.value || "tutti";
+
+      list.innerHTML = "";
+
+      let filteredFlavors = flavors;
+
+      if (selectedFilter === "vegani") {
+        filteredFlavors = flavors.filter(f => f.vegano);
+      }
+
+      filteredFlavors.forEach((flavor, i) => {
+        const hasDescription = flavor.description[currentLang] && flavor.description[currentLang].trim() !== "";
+
+        const block = document.createElement("div");
+        block.className = "flavor";
+
+        block.innerHTML = `
+          <div class="flavor-title" 
+              ${hasDescription ? `onclick="toggleDetails(${i})" tabindex="0" onkeydown="if(event.key==='Enter' || event.key===' ') toggleDetails(${i})"` : 'class="disabled"'} >
+            <span>${flavor.name[currentLang]}</span>
+            ${flavor.vegano ? '<img src="immagini/vegano.png" alt="Vegano" class="icon" />' : ''}
+          </div>
+          <div class="flavor-details" id="details-${i}" style="display:none;">
+            <div>${hasDescription ? flavor.description[currentLang] : ""}</div>
+          </div>
+        `;
+        list.appendChild(block);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateFilterLabels();
+      renderFlavors();
+    });
+
+    document.getElementById('filter').addEventListener('change', () => {
+      renderFlavors();
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+<script>
+  window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      palette: {
+        popup: { background: "#fde2e4", text: "#000" },
+        button: { background: "#d16ba5", text: "#fff" }
+      },
+      theme: "classic",
+      type: "opt-in",
+      content: {
+        message: "Questo sito utilizza cookie tecnici per migliorare l'esperienza utente. Nessun cookie di profilazione verrà installato senza consenso.",
+        allow: "Accetta",
+        deny: "Rifiuta",
+        link: "Maggiori informazioni",
+        href: "https://www.cookiesandyou.com/"
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
