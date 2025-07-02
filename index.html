@@ -126,7 +126,7 @@
 </head>
 <body>
   <header>
-    <img src="immagini/logo.png" alt="Logo Gelateria La Via Lattea" style="height: 80px; margin-bottom: 0.5rem;" />
+    <img src="logo.png" alt="Logo Gelateria La Via Lattea" style="height: 80px; margin-bottom: 0.5rem;" />
     <h1>Gelateria La Via Lattea</h1>
     <div class="lang-switch" onclick="switchLang()">IT | EN</div>
     <div class="filter-bar">
@@ -233,7 +233,7 @@
           <div class="flavor-title" 
               ${hasDescription ? `onclick="toggleDetails(${i})" tabindex="0" onkeydown="if(event.key==='Enter' || event.key===' ') toggleDetails(${i})"` : 'class="disabled"'} >
             <span>${flavor.name[currentLang]}</span>
-            ${flavor.vegano ? '<img src="immagini/vegano.png" alt="Vegano" class="icon" />' : ''}
+            ${flavor.vegano ? '<img src="vegano.png" alt="Vegano" class="icon" />' : ''}
           </div>
           <div class="flavor-details" id="details-${i}" style="display:none;">
             <div>${hasDescription ? flavor.description[currentLang] : ""}</div>
