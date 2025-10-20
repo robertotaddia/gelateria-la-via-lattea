@@ -122,6 +122,39 @@
       cursor: default;
       user-select: none;
     }
+
+    .flavor-description {
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+      color: #666;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    footer.footer {
+      background-color: #fde2e4;
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #4b4b4b;
+      font-size: 0.9rem;
+      border-top: 2px solid #f9c5d1;
+    }
+
+    .footer a {
+      color: #d16ba5;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer a:hover {
+      color: #ff91a4;
+      text-decoration: underline;
+    }
+
+    .footer-note {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #777;
+    }
   </style>
 </head>
 <body>
@@ -142,7 +175,13 @@
     <!-- Gusti vengono inseriti via JS -->
   </div>
 
-  <div class="footer">© 2025 Gelateria La Via Lattea</div>
+  <footer class="footer">
+    <div class="footer-content">
+      <p><strong>Gelateria La Via Lattea</strong></p>
+      <p>📍 <a href="https://www.google.com/maps/place/Gelateria+La+Via+Lattea+Di+Taddia+Roberto/@44.4460264,11.4699031,17z/data=!3m2!4b1!5s0x477e29bbf201abd7:0x96c328674547ef6!4m6!3m5!1s0x477e29bc7594e531:0x63e4de4cf9ac233f!8m2!3d44.4460226!4d11.472478!16s%2Fg%2F1vb9bx47?entry=ttu&g_ep=EgoyMDI1MTAxNC4wIKXMDSoASAFQAw%3D%3D">Via Emilia 66, 40064 Ozzano dell'Emilia (BO)</a></p>
+      <p>📞 <a href="tel:+39051798284">+39 051 798284</a></p>
+    </div>
+  </footer>
 
   <script>
     const translations = {
@@ -160,22 +199,20 @@
 
     const flavors = [
       { name: { it: "Amarena", en: "Sour Cherry" }, vegano: false, description: { it: "Fiordilatte con amarene", en: "Milk cream with sour cherries" } },
+      { name: { it: "Arachide con Noci Pecan Caramellate", en: "Peanut with Caramelized Pecan Nuts" }, vegano: true, description: { it: "", en: "" } },
       { name: { it: "Bacio", en: "Bacio" }, vegano: false, description: { it: "", en: "" } },
       { name: { it: "Cioccolato", en: "Chocolate" }, vegano: false, description: { it: "", en: "" } },
       { name: { it: "Cioccolato fondente Santo Domingo 70%", en: "Dark Chocolate Santo Domingo 70%" }, vegano: true, description: { it: "", en: "" } },
       { name: { it: "Cookies Caramel", en: "Cookies Caramel" }, vegano: false, description: { it: "", en: "" } },
       { name: { it: "Crema", en: "Cream" }, vegano: false, description: { it: "", en: "" } },
       { name: { it: "Cremino Croccante", en: "Crunchy Cream" }, vegano: false, description: { it: "Nocciola, nutella e cereali ricoperti di cioccolato", en: "Hazelnut, Nutella, and chocolate-covered cereals" } },
-      { name: { it: "Crunchy Lemon", en: "Crunchy Lemon" }, vegano: false, description: { it: "Crema al limone e crumble al limone", en: "Lemon cream with lemon crumble" } },
+      { name: { it: "Dubai Chocolate", en: "Dubai Chocolate" }, vegano: false, description: { it: "", en: "" } },
       { name: { it: "Fiordilatte", en: "Milk Cream" }, vegano: false, description: { it: "", en: "" } },
       { name: { it: "Fragola", en: "Strawberry" }, vegano: true, description: { it: "", en: "" } },
-      { name: { it: "Frutti Rossi", en: "Red Fruits" }, vegano: true, description: { it: "Lampone, fragola, ciliegia e melagrana", en: "Raspberry, strawberry, cherry, and pomegranate" } },
       { name: { it: "Limone", en: "Lemon" }, vegano: true, description: { it: "", en: "" } },
-      { name: { it: "Mango", en: "Mango" }, vegano: true, description: { it: "", en: "" } },
       { name: { it: "Mascarpone al Caramello Salato", en: "Salted Caramel Mascarpone" }, vegano: false, description: { it: "Con crumble al caramello", en: "With caramel crumble" } },
       { name: { it: "Mousse allo Zabaione", en: "Zabaione Mousse" }, vegano: false, description: { it: "", en: "" } },
       { name: { it: "Nocciola", en: "Hazelnut" }, vegano: false, description: { it: "", en: "" } },
-      { name: { it: "Nocciola Olvi", en: "Hazelnut Olvi" }, vegano: true, description: { it: "", en: "" } },
       { name: { it: "Nutella", en: "Nutella" }, vegano: false, description: { it: "", en: "" } },
       { name: { it: "Panna Cotta", en: "Panna Cotta" }, vegano: false, description: { it: "Panna con caramello", en: "Cream with caramel" } },
       { name: { it: "Pistacchio", en: "Pistachio" }, vegano: false, description: { it: "", en: "" } },
@@ -218,7 +255,6 @@
       list.innerHTML = "";
 
       let filteredFlavors = flavors;
-
       if (selectedFilter === "vegani") {
         filteredFlavors = flavors.filter(f => f.vegano);
       }
@@ -230,18 +266,16 @@
         block.className = "flavor";
 
         block.innerHTML = `
-          <div class="flavor-title" 
-              ${hasDescription ? `onclick="toggleDetails(${i})" tabindex="0" onkeydown="if(event.key==='Enter' || event.key===' ') toggleDetails(${i})"` : 'class="disabled"'} >
+          <div class="flavor-title">
             <span>${flavor.name[currentLang]}</span>
             ${flavor.vegano ? '<img src="immagini/vegano.png" alt="Vegano" class="icon" />' : ''}
           </div>
-          <div class="flavor-details" id="details-${i}" style="display:none;">
-            <div>${hasDescription ? flavor.description[currentLang] : ""}</div>
-          </div>
+          ${hasDescription ? `<div class="flavor-description">${flavor.description[currentLang]}</div>` : ""}
         `;
         list.appendChild(block);
       });
     }
+
 
     document.addEventListener('DOMContentLoaded', () => {
       updateFilterLabels();
