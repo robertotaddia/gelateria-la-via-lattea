@@ -159,7 +159,7 @@
 </head>
 <body>
   <header>
-    <img src="immagini/logo.png" alt="Logo Gelateria La Via Lattea" style="height: 80px; margin-bottom: 0.5rem;" />
+    <img src="immagini/logo2.png" alt="Logo Gelateria La Via Lattea" style="height: 80px; margin-bottom: 0.5rem;" />
     <h1>Gelateria La Via Lattea</h1>
     <div class="lang-switch" onclick="switchLang()">IT | EN</div>
     <div class="filter-bar">
@@ -219,7 +219,7 @@
       { name: { it: "Sognando la Sardegna", en: "Dreaming of Sardinia" }, vegano: false, description: { it: "Ricotta, miele e crumble al mirto", en: "Ricotta, honey, and myrtle crumble" } },
       { name: { it: "Stracciatella", en: "Stracciatella" }, vegano: false, description: { it: "Fiordilatte con gocce di cioccolato", en: "Milk cream with chocolate chips" } },
       { name: { it: "Stracciatella Olvi", en: "Stracciatella Olvi" }, vegano: true, description: { it: "", en: "" } },
-      { name: { it: "Vaniglia Olvi con mela e cannella", en: "Vanilla Olvi with apple and cinnamon" }, vegano: true, description: { it: "", en: "" } },
+      { name: { it: "Vaniglia Olvi con Mela e Cannella", en: "Vanilla Olvi with Apple and Cinnamon" }, vegano: true, description: { it: "", en: "" } },
       { name: { it: "Viaggio in Toscana", en: "Trip to Tuscany" }, vegano: false, description: { it: "Crema all'amaretto, vino dolce, crumble alla mandorla e anice stellato", en: "Amaretto cream, sweet wine, almond crumble, and star anise" } },
       { name: { it: "Yogurt", en: "Yogurt" }, vegano: false, description: { it: "", en: "" } },
       { name: { it: "Zuppa Inglese", en: "English Trifle" }, vegano: false, description: { it: "Crema, pan di Spagna e alchermes", en: "Cream, sponge cake, and Alchermes liqueur" } },
@@ -290,6 +290,7 @@
   <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
 <script>
   window.addEventListener("load", function(){
+    // inizializza cookieconsent
     window.cookieconsent.initialise({
       palette: {
         popup: { background: "#fde2e4", text: "#000" },
@@ -303,10 +304,51 @@
         deny: "Rifiuta",
         link: "Maggiori informazioni",
         href: "https://www.cookiesandyou.com/"
-      }
+      },
+      // callback forniti dalla libreria
+      onInitialise: function(status) { adjustPadding(); },
+      onStatusChange: function(status) { adjustPadding(); },
+      onRevokeChoice: function() { adjustPadding(); }
     });
+
+    // funzione che cerca il banner e regola il padding del body
+    function adjustPadding() {
+      // cerchiamo l'elemento del banner (più selector per compatibilità)
+      const popup = document.querySelector('.cc-window, .cc-banner, .cookieconsent, .cc-banner-wrapper');
+      if (!popup) {
+        // se non è ancora presente, ritentiamo dopo un breve timeout
+        setTimeout(adjustPadding, 150);
+        return;
+      }
+
+      // otteniamo le proprietà di stile calcolate
+      const style = window.getComputedStyle(popup);
+      const isVisible = style.display !== 'none' && style.visibility !== 'hidden' && popup.offsetHeight > 0;
+
+      if (isVisible) {
+        // aggiungiamo un padding-bottom al body pari all'altezza del banner più un piccolo margine
+        const extra = 12; // spazio aggiuntivo per non toccare il banner
+        document.body.style.paddingBottom = (popup.offsetHeight + extra) + 'px';
+      } else {
+        // rimuoviamo il padding quando non è visibile
+        document.body.style.paddingBottom = '';
+      }
+    }
+
+    // Osservatore DOM: se la libreria aggiunge/rimuove il banner dinamicamente, lo intercettiamo
+    const observer = new MutationObserver(() => {
+      adjustPadding();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // aggiungiamo anche un listener resize in modo che se cambia l'altezza (es. mobile keyboard) si ricalcoli
+    window.addEventListener('resize', adjustPadding);
+
+    // un tentativo iniziale dopo un piccolo ritardo per coprire i casi in cui il banner venga inserito più tardi
+    setTimeout(adjustPadding, 300);
   });
 </script>
+
 
 </body>
 </html>
