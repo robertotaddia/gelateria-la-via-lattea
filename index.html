@@ -64,7 +64,7 @@
       font-weight: bold;
       font-size: 1.2rem;
       color: #ff91a4;
-      cursor: pointer;
+      cursor: default;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -259,7 +259,7 @@
         filteredFlavors = flavors.filter(f => f.vegano);
       }
 
-      filteredFlavors.forEach((flavor, i) => {
+      filteredFlavors.forEach((flavor) => {
         const hasDescription = flavor.description[currentLang] && flavor.description[currentLang].trim() !== "";
 
         const block = document.createElement("div");
@@ -272,10 +272,10 @@
           </div>
           ${hasDescription ? `<div class="flavor-description">${flavor.description[currentLang]}</div>` : ""}
         `;
+
         list.appendChild(block);
       });
     }
-
 
     document.addEventListener('DOMContentLoaded', () => {
       updateFilterLabels();
@@ -288,67 +288,26 @@
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
-<script>
-  window.addEventListener("load", function(){
-    // inizializza cookieconsent
-    window.cookieconsent.initialise({
-      palette: {
-        popup: { background: "#fde2e4", text: "#000" },
-        button: { background: "#d16ba5", text: "#fff" }
-      },
-      theme: "classic",
-      type: "opt-in",
-      content: {
-        message: "Questo sito utilizza cookie tecnici per migliorare l'esperienza utente. Nessun cookie di profilazione verrà installato senza consenso.",
-        allow: "Accetta",
-        deny: "Rifiuta",
-        link: "Maggiori informazioni",
-        href: "https://www.cookiesandyou.com/"
-      },
-      // callback forniti dalla libreria
-      onInitialise: function(status) { adjustPadding(); },
-      onStatusChange: function(status) { adjustPadding(); },
-      onRevokeChoice: function() { adjustPadding(); }
-    });
-
-    // funzione che cerca il banner e regola il padding del body
-    function adjustPadding() {
-      // cerchiamo l'elemento del banner (più selector per compatibilità)
-      const popup = document.querySelector('.cc-window, .cc-banner, .cookieconsent, .cc-banner-wrapper');
-      if (!popup) {
-        // se non è ancora presente, ritentiamo dopo un breve timeout
-        setTimeout(adjustPadding, 150);
-        return;
-      }
-
-      // otteniamo le proprietà di stile calcolate
-      const style = window.getComputedStyle(popup);
-      const isVisible = style.display !== 'none' && style.visibility !== 'hidden' && popup.offsetHeight > 0;
-
-      if (isVisible) {
-        // aggiungiamo un padding-bottom al body pari all'altezza del banner più un piccolo margine
-        const extra = 12; // spazio aggiuntivo per non toccare il banner
-        document.body.style.paddingBottom = (popup.offsetHeight + extra) + 'px';
-      } else {
-        // rimuoviamo il padding quando non è visibile
-        document.body.style.paddingBottom = '';
-      }
-    }
-
-    // Osservatore DOM: se la libreria aggiunge/rimuove il banner dinamicamente, lo intercettiamo
-    const observer = new MutationObserver(() => {
-      adjustPadding();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // aggiungiamo anche un listener resize in modo che se cambia l'altezza (es. mobile keyboard) si ricalcoli
-    window.addEventListener('resize', adjustPadding);
-
-    // un tentativo iniziale dopo un piccolo ritardo per coprire i casi in cui il banner venga inserito più tardi
-    setTimeout(adjustPadding, 300);
-  });
-</script>
-
+  <script>
+    window.addEventListener("load", function(){
+      // inizializza cookieconsent
+      window.cookieconsent.initialise({
+        palette: {
+          popup: { background: "#fde2e4", text: "#000" },
+          button: { background: "#d16ba5", text: "#fff" }
+        },
+        theme: "classic",
+        type: "opt-in",
+        content: {
+          message: "Questo sito utilizza cookie tecnici per migliorare l'esperienza utente. Nessun cookie di profilazione verrà installato senza consenso.",
+          allow: "Accetta",
+          deny: "Rifiuta",
+          link: "Maggiori informazioni",
+          href: "https://www.cookiesandyou.com/"
+        }
+      });
+      });
+  </script>
 
 </body>
 </html>
